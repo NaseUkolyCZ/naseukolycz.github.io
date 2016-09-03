@@ -1,13 +1,13 @@
 <rss version="2.0">
   <channel>
     <title>NašeÚkoly.CZ</title>
-    <link>http://http//www.naseukoly.cz/</link>
+    <link>http://www.naseukoly.cz/</link>
     <description>FsBlog aims to be a blog-aware static site generator, mostly built in F#. But don't worry, you won't even need to know any F# to get up and running. So long as you are comfortable using a command line or terminal, and have a degree of familiarity with Markdown and Razor syntax - you're good to go!
 </description>
     <item>
       <title>welcome to NaseUkoly.CZ</title>
-      <guid>http://http//www.naseukoly.cz//blog/2016/09-03-welcome-to-naseukoly-cz</guid>
-      <link>http://http//www.naseukoly.cz//blog/2016/09-03-welcome-to-naseukoly-cz/index.html</link>
+      <guid>http://www.naseukoly.cz//blog/2016/09-03-welcome-to-naseukoly-cz</guid>
+      <link>http://www.naseukoly.cz//blog/2016/09-03-welcome-to-naseukoly-cz/index.html</link>
       <pubDate>Sat, 03 Sep 2016 01:03:21 GMT</pubDate>
       <description>
 
