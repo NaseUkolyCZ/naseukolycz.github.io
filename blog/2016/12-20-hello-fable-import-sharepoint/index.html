@@ -1,0 +1,245 @@
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Hello fable-import-sharepoint</title>
+    <link rel="stylesheet" href="http://www.naseukoly.cz//stylesheets/styles.css">
+    <link rel="stylesheet" href="http://www.naseukoly.cz//stylesheets/pygment_trac.css">
+    <link rel="stylesheet" href="http://www.naseukoly.cz//stylesheets/metro.css">
+    <link rel="alternate" href="http://www.naseukoly.cz//rss.xml" title="NašeÚkoly.CZ" type="application/rss+xml">
+    <link rel="shortcut icon" href="http://www.naseukoly.cz//favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!-- FSharp.Formatting Styles -->
+  	<link rel="stylesheet" type="text/css" media="screen" href="http://www.naseukoly.cz//fsharp.formatting/tooltips.css" />
+  	<script type="text/javascript" src="http://www.naseukoly.cz//fsharp.formatting/tooltips.js"></script>
+		<script type="text/javascript" src="http://www.naseukoly.cz//javascripts/jquery.js"></script>
+		<script type="text/javascript" src="http://www.naseukoly.cz//javascripts/metro.js"></script>
+  </head>
+  <body>
+    <div class="container">
+	
+		<div class="app-bar">
+			<a class="app-bar-element" href="http://www.naseukoly.cz//index.html">NašeÚkoly.CZ</a>
+			<span class="app-bar-divider"></span>
+			<ul class="app-bar-menu">
+				<li>
+					<a href="" class="dropdown-toggle">Blog</a>
+					<ul class="d-menu" data-role="dropdown">
+
+						<li><a href="/blog/2016/12-20-hello-fable-import-sharepoint/index.html">Hello fable-import-sharepoint</a></li>
+						<li><a href="/blog/2016/09-03-welcome-to-naseukoly-cz/index.html">welcome to NaseUkoly.CZ</a></li>
+						<li class="divider"></li>
+						<li><a href="/blog/index.html">All posts</a></li>
+					</ul>
+				</li>				
+				<li><a href="/contact/index.html">Contact</a></li>
+			</ul>
+		</div>  
+
+        <div>
+
+<div class="align-center">
+	<h1 class="text-shadow metro-title text-light" style="font-size: 4.5rem; line-height: 1">NašeÚkoly.CZ</h1>
+	<div class="padding30 sub-leader text-light">Functional C#,F# and JavaScript Web, Mobile, Office 365, SharePoint and BI Development</div>
+						
+	</p>
+</div>
+		
+<h1>Hello fable-import-sharepoint</h1>
+
+<p>This post is about 3 month long journey to <a href="https://github.com/hsharpsoftware/fable-import-sharepoint">fable-import-sharepoint</a>.
+Includes also a lot of information from <a href="http://david.podhola.net">my</a> past.</p>
+<h2>TL;DR</h2>
+<p>Using <a href="http://fable.io/">Fable</a> and <a href="https://github.com/hsharpsoftware/fable-import-sharepoint">fable-import-sharepoint</a> you can easily create complex
+multisite SharePoint applications that make big changes to the user interface, start workflows from the browser etc.</p>
+<h2>Preface</h2>
+<p>Two months ago I became a part of a project team assigned a very interesting task - to rewrite a highly customized DMS on a top of Microsoft SharePoint.
+I was not for the first time I was writing for SharePoint - in fact, it was my fourth project this year, but this time it was a little bit special.
+The projects we wrote during the summer and autumn were <a href="https://msdn.microsoft.com/en-us/library/office/fp142381.aspx">provider-hosted SharePoint Add-ins</a>.
+We wrote them as server applications running on the top of <a href="https://suave.io/">Suave</a> <a href="https://blog.vbfox.net/2016/03/31/Suave-in-IIS-hello-world.html">hosted in IIS</a>
+with the front end using <a href="https://facebook.github.io/react/">React</a> and <a href="http://redux.js.org/">Redux</a>.
+These are the technologies we have been using for years and <a href="http://fsharp.org/testimonials/#synctoday-1">were proven to work for us and help us to write code faster</a>.</p>
+<h2>SharePoint Designer Only</h2>
+<p>The new project was completely different. From all the SharePoint integration and customization options, only those accessible using SharePoint Designer were allowed.
+At the same time the user requirements were quite high which was understandable taking into the account they were used to the application created directly for their needs.
+Most of them were related to the user experience in terms of:</p>
+<ul>
+<li>information they see on the screen (add or remove)</li>
+<li>actions (links, buttons, menu items) accessible on the particular screen (add or remove)</li>
+<li>specialized validation (file name including wild cards against a specific list)</li>
+<li>multiple file upload</li>
+<li>cascade workflows with App-Steps</li>
+<li>very strict user permissions (e.g. upload only, cannot read the file later)</li>
+</ul>
+<p>It was clear soon that not only heavy UI changes will need to be done, but also iterating for list items, starting workflows and so on.</p>
+<h2>JavaScript Legacy</h2>
+<p>There are different ways how to modify SharePoint pages. I did not want to modify HTML directly mainly because the application
+is in fact running on multiple sites so it would be extremely difficult to sync the changes.
+The other ways was to deploy JavaScript to Site Assets, include it in the MasterPage and let it add or hide the elements that we needed.</p>
+<p>Now let me get back in the history for a while. I first met JavaScript in about 2001 when we were developing
+large Dealer Management System for BMW importer and dealers. At that time we switched from writing ASP applications backed with Delphi COM+ components to
+the very first betas of Microsoft .NET. There were no ASP.NET yet and we wanted to write an intranet/extranet application so we have to invent an application architecture
+by ourselves.</p>
+<p>We were very much influenced by that time latest news from Microsoft like <a href="https://msdn.microsoft.com/en-us/library/ms950789.aspx">SQL XML features</a> so we decided
+most of the logic would be done by the SQL server generating XML that was later transformed by static XSLT files into the final XHTML.</p>
+<p>Everything was very fine except for the users demanding some advanced features on the client side like the suggestions as they typed, validations before form submit etc.
+And that was when we started to write JavaScript.</p>
+<p>Of course it was terrible. There were no jQuery at that time. No advanced frameworks like Angular or React. Niente. Just the plain JavaScript.</p>
+<p>For the developers with the Delphi, Visual Basic and later C# background with static types and the compile step checking for typos etc. it was simply a nightmare.
+Endless nights when we were trying to hunt bugs strange bugs in Internet Explorer. All the funny stories about comparing apples to oranges and getting
+<a href="http://charlieharvey.org.uk/page/javascript_the_weird_parts">the most difficult-to-understand results you can imagine</a>.</p>
+<p>So it is not difficult to imagine for the next 10 years if a feature was requested by a project/product manager the answer was sometimes "It would need to be done in
+JavaScript, so ..." supported by nodding and affirmative grunts by the survivors of the previous project.</p>
+<h2>Modern JavaScript</h2>
+<p>About ten years later we were writing a ASP.NET MVC application for call centre agents build on the top of Microsoft Dynamics CRM. With the help of jQuery the code was much more readable
+now, but we still have to fight a lot of bugs in the runtime (and even production as part of the application was dynamically generated!). Not nice.</p>
+<p>Heard about something called Angular at that time, but the server side generated HTML approach was still too strong.</p>
+<p>Fast forward to mid-2015. We are writing an application for managing the front office clerks and their shifts. We decided to use ASP.NET Core and Angular.
+Had a lot of fun and although I did mostly the back end, but it looked like Angular is very usable and ready to replace the ASP.NET MVC.</p>
+<p>When 2016 kicked in, I am helping my friends to add new Angular front end to their ASP.NET WebPages application from late 2000s. It is not my first Angular application, but for the first time
+(and definitely not for the last) we were adding Angular SPA to server generated application already many years in production.</p>
+<h2>F# and FunScript</h2>
+<p>I have described my path to programming in F# <a href="https://github.com/fsharping/Docs/tree/master/004-FSharp%20v%20praxi">several</a>
+<a href="http://fsharp.org/testimonials/#synctoday-1">times</a>.
+For the past years me and my colleagues have been using F# for:</p>
+<ul>
+<li>writing simple console application</li>
+<li>writing Outlook AddIns</li>
+<li>writing ASP.NET web servers</li>
+</ul>
+<p>When we was asked by a customer if we were able to write <a href="https://dev.office.com/docs/add-ins/overview/office-add-ins">Office Add-ins</a>, I was not very happy first
+imagining we will have to write another JavaScript-only application.
+Then to my suprise, I found <a href="http://funscript.info/">FunScript</a>. I hoped to use it, I studied to source code and even <a href="https://github.com/ZachBray/FunScript/pull/204">tried to contribute</a>,
+but it seems FunScript was already abandoned at that time.</p>
+<h2><a href="http://fable.io/">Fable</a> to the rescue</h2>
+<p>Then in February 2016, I found about <a href="http://fable.io/">Fable</a>. You can imagine how happy I was. A new world emerged.
+First small module we wrote was just a helper function working making complex tree structures flat. The results were amazing:
+few hours writing F# code and the tests. Then transpilling into JavaScript and another few hours tweaking
+the interface to be really usable from regular JavaScript.</p>
+<p>I was already aware <a href="http://ionide.io/">Ionide</a> is written in F# and uses <a href="http://fable.io/">Fable</a>, but I needed to meet project where I would really use it.</p>
+<h2><a href="https://github.com/hsharpsoftware/fable-import-sharepoint">fable-import-sharepoint</a></h2>
+<p>And then the JavaScript-only SharePoint appeared. I immediatelly decided we would need to have some support.
+There were three basic areas, where Fable would help:</p>
+<ul>
+<li>
+using <a href="https://code.visualstudio.com/">Visual Studio Code</a> <a href="https://docs.microsoft.com/en-us/dotnet/articles/fsharp/tutorials/getting-started/getting-started-vscode">with Ionide</a> 
+and the autocomplete not to have to remember <a href="https://msdn.microsoft.com/en-us/library/office/jj163201.aspx">all the SharePoint functions by hearth</a>
+</li>
+<li>creating the Domain Specific Language for the general SharePoint frontend development</li>
+<li>creating specific types and functions related to the project domain (complex DMS with specific workflows and strict permission system)</li>
+</ul>
+<p>The first two from the list are shared in the <a href="https://github.com/hsharpsoftware/fable-import-sharepoint">fable-import-sharepoint GitHub repository</a>.</p>
+<p>Let me explain, how I created them and what they can be used to.</p>
+<h3><code>Fable.Import.Sharepoint*.fs</code></h3>
+<p>These are the files that help <a href="https://www.youtube.com/watch?v=RGiwiAoIn6w">the autocomplete (IntelliSense) provided by Ionide</a> in Visual Studio Core.
+They were created by running slightly modified <a href="https://github.com/fable-compiler/Fable/tree/master/src/ts2fable"><code>ts2fable</code></a>
+on files from <a href="https://github.com/DefinitelyTyped/DefinitelyTyped/blob/4869992bc079b88280b9ff91213528904109e8ae/sharepoint/index.d.ts">DefinitelyTyped/SharePoint</a>
+and then
+working with the files by hand till the results were what I wanted them to be.</p>
+<p>Looks boring? Was not at all! <a href="https://github.com/fable-compiler/Fable/tree/master/src/ts2fable"><code>ts2fable</code></a> creates most of the content you need and
+also in this task creativity is needed.</p>
+<p>The interface is far from perfect now, but was usable not only in the initial project, but also in all of the following.</p>
+<p>You can use it to write the classic SharePoint snippets like</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
+<span class="l">2: </span>
+<span class="l">3: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp">    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs1', 1)" onmouseover="showTip(event, 'fs1', 1)" class="i">clientContext</span> <span class="o">=</span> <span class="i">SP</span><span class="o">.</span><span class="i">ClientContext</span><span class="o">.</span><span class="i">get_current</span>()
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs2', 2)" onmouseover="showTip(event, 'fs2', 2)" class="i">web</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs1', 3)" onmouseover="showTip(event, 'fs1', 3)" class="i">clientContext</span><span class="o">.</span><span class="i">get_web</span>()
+    <span onmouseout="hideTip(event, 'fs1', 4)" onmouseover="showTip(event, 'fs1', 4)" class="i">clientContext</span><span class="o">.</span><span class="i">load</span>(<span onmouseout="hideTip(event, 'fs2', 5)" onmouseover="showTip(event, 'fs2', 5)" class="i">web</span>)
+</code></pre></td>
+</tr>
+</table>
+<h3><code>Browser.Support.fs</code></h3>
+<p>We created <a href="https://github.com/hsharpsoftware/fable-import-sharepoint/blob/master/src/Fable.Import.SharePoint/Browser.Support.fs"><code>Browser.Support.fs</code></a> to
+make it easier to write <a href="https://jquery.com/">jQuery</a> calls in the functional way.</p>
+<p>Examples:</p>
+<ul>
+<li><code>Literals.Global.Ribbon.ApproveReject |&gt; el |&gt; hide</code></li>
+<li><code>Literals.Global.Ribbon.S4RibbonRow |&gt; el |&gt; find ( Literals.Global.Ribbon.MsCuiCtlMedium ) |&gt; last |&gt; hide</code></li>
+<li><code>Literals.AccessRequestRPR.RequestType.ID |&gt; el |&gt; change ( fun () -&gt; showAndHide() ) |&gt; ignore</code></li>
+</ul>
+<p>Note: this is no related to SharePoint development.</p>
+<h3><code>HSharp.fs</code></h3>
+<p>The requirements to change SharePoint user interface on multiple sites led to creating few small support functions in <a href="https://github.com/hsharpsoftware/fable-import-sharepoint/blob/master/src/Fable.Import.SharePoint/HSharp.fs"><code>HSharp.fs</code></a>.
+If you implement <code>IApplication</code> interface, you can then add</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l"> 1: </span>
+<span class="l"> 2: </span>
+<span class="l"> 3: </span>
+<span class="l"> 4: </span>
+<span class="l"> 5: </span>
+<span class="l"> 6: </span>
+<span class="l"> 7: </span>
+<span class="l"> 8: </span>
+<span class="l"> 9: </span>
+<span class="l">10: </span>
+<span class="l">11: </span>
+<span class="l">12: </span>
+<span class="l">13: </span>
+<span class="l">14: </span>
+<span class="l">15: </span>
+<span class="l">16: </span>
+<span class="l">17: </span>
+<span class="l">18: </span>
+<span class="l">19: </span>
+<span class="l">20: </span>
+<span class="l">21: </span>
+<span class="l">22: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="o">&lt;</span><span class="i">SharePoint</span><span class="o">:</span><span class="i">ScriptLink</span> <span class="i">runat</span><span class="o">=</span><span class="s">&quot;server&quot;</span> <span class="i">ID</span><span class="o">=</span><span class="s">&quot;NUCZScriptLink1&quot;</span> <span class="i">Language</span><span class="o">=</span><span class="s">&quot;javascript&quot;</span> <span class="i">Name</span><span class="o">=</span><span class="s">&quot;~site/SiteAssets/Scripts/MicrosoftAjax.js&quot;</span><span class="o">/&gt;</span>
+<span class="o">&lt;</span><span class="i">SharePoint</span><span class="o">:</span><span class="i">ScriptLink</span> <span class="i">runat</span><span class="o">=</span><span class="s">&quot;server&quot;</span> <span class="i">ID</span><span class="o">=</span><span class="s">&quot;NUCZScriptLink2&quot;</span> <span class="i">Language</span><span class="o">=</span><span class="s">&quot;javascript&quot;</span> <span class="i">Name</span><span class="o">=</span><span class="s">&quot;~site/SiteAssets/Scripts/jquery-1.7.2.min.js&quot;</span><span class="o">/&gt;</span>
+<span class="o">&lt;</span><span class="i">SharePoint</span><span class="o">:</span><span class="i">ScriptLink</span> <span class="i">runat</span><span class="o">=</span><span class="s">&quot;server&quot;</span> <span class="i">ID</span><span class="o">=</span><span class="s">&quot;NUCZScriptLink3&quot;</span> <span class="i">Language</span><span class="o">=</span><span class="s">&quot;javascript&quot;</span> <span class="i">Name</span><span class="o">=</span><span class="s">&quot;~site/SiteAssets/Scripts/core.min.js&quot;</span><span class="o">/&gt;</span>
+<span class="o">&lt;</span><span class="i">SharePoint</span><span class="o">:</span><span class="i">ScriptLink</span> <span class="i">runat</span><span class="o">=</span><span class="s">&quot;server&quot;</span> <span class="i">ID</span><span class="o">=</span><span class="s">&quot;NUCZScriptLink7&quot;</span> <span class="i">Language</span><span class="o">=</span><span class="s">&quot;javascript&quot;</span> <span class="i">Name</span><span class="o">=</span><span class="s">&quot;~site/SiteAssets/Scripts/jquery.SPServices-2014.02.js&quot;</span><span class="o">/&gt;</span>
+<span class="o">&lt;</span><span class="i">SharePoint</span><span class="o">:</span><span class="i">ScriptLink</span> <span class="i">runat</span><span class="o">=</span><span class="s">&quot;server&quot;</span> <span class="i">ID</span><span class="o">=</span><span class="s">&quot;NUCZScriptLink4&quot;</span> <span class="i">Language</span><span class="o">=</span><span class="s">&quot;javascript&quot;</span> <span class="i">Name</span><span class="o">=</span><span class="s">&quot;~site/_layouts/15/SP.Runtime.js&quot;</span><span class="o">/&gt;</span>
+<span class="o">&lt;</span><span class="i">SharePoint</span><span class="o">:</span><span class="i">ScriptLink</span> <span class="i">runat</span><span class="o">=</span><span class="s">&quot;server&quot;</span> <span class="i">ID</span><span class="o">=</span><span class="s">&quot;NUCZScriptLink5&quot;</span> <span class="i">Language</span><span class="o">=</span><span class="s">&quot;javascript&quot;</span> <span class="i">Name</span><span class="o">=</span><span class="s">&quot;~site/_layouts/15/SP.js&quot;</span><span class="o">/&gt;</span>
+<span class="o">&lt;</span><span class="i">SharePoint</span><span class="o">:</span><span class="i">ScriptLink</span> <span class="i">runat</span><span class="o">=</span><span class="s">&quot;server&quot;</span> <span class="i">ID</span><span class="o">=</span><span class="s">&quot;NUCZScriptLink8&quot;</span> <span class="i">Language</span><span class="o">=</span><span class="s">&quot;javascript&quot;</span> <span class="i">Name</span><span class="o">=</span><span class="s">&quot;~site/_layouts/15/SP.WorkflowServices.js&quot;</span><span class="o">/&gt;</span>
+<span class="o">&lt;</span><span class="i">SharePoint</span><span class="o">:</span><span class="i">ScriptLink</span> <span class="i">runat</span><span class="o">=</span><span class="s">&quot;server&quot;</span> <span class="i">ID</span><span class="o">=</span><span class="s">&quot;NUCZScriptLink9&quot;</span> <span class="i">Language</span><span class="o">=</span><span class="s">&quot;javascript&quot;</span> <span class="i">Name</span><span class="o">=</span><span class="s">&quot;~site/_layouts/15/SP.UI.Dialog.js&quot;</span><span class="o">/&gt;</span>
+<span class="o">&lt;</span><span class="i">SharePoint</span><span class="o">:</span><span class="i">ScriptLink</span> <span class="i">runat</span><span class="o">=</span><span class="s">&quot;server&quot;</span> <span class="i">ID</span><span class="o">=</span><span class="s">&quot;NUCZScriptLink10&quot;</span> <span class="i">Language</span><span class="o">=</span><span class="s">&quot;javascript&quot;</span> <span class="i">Name</span><span class="o">=</span><span class="s">&quot;~site/SiteAssets/Scripts/dropzone.js&quot;</span><span class="o">/&gt;</span>
+<span class="o">&lt;</span><span class="i">SharePoint</span><span class="o">:</span><span class="i">ScriptLink</span> <span class="i">runat</span><span class="o">=</span><span class="s">&quot;server&quot;</span> <span class="i">ID</span><span class="o">=</span><span class="s">&quot;NUCZScriptLink11&quot;</span> <span class="i">Language</span><span class="o">=</span><span class="s">&quot;javascript&quot;</span> <span class="i">Name</span><span class="o">=</span><span class="s">&quot;~site/SiteAssets/Scripts/rsvp-latest.js&quot;</span><span class="o">/&gt;</span>
+    	<span class="o">&lt;</span><span class="i">script</span> <span class="k">type</span><span class="o">=</span><span class="s">&quot;text/javascript&quot;</span><span class="o">&gt;</span>
+    <span class="c">// Load the required SharePoint libraries.</span>
+    <span class="o">$</span>(<span class="i">document</span>)<span class="o">.</span><span class="i">ready</span>(<span class="k">function</span> () {
+        <span class="i">ExecuteOrDelayUntilScriptLoaded</span>(<span class="i">execOperation</span>,<span class="s">&quot;sp.js&quot;</span>);
+    });
+
+    <span class="k">function</span> <span class="i">execOperation</span>() {
+		<span class="i">HSharp</span><span class="o">.</span><span class="i">start</span>();
+    }
+<span class="o">&lt;/</span><span class="i">script</span><span class="o">&gt;</span>	
+<span class="o">&lt;</span><span class="i">SharePoint</span><span class="o">:</span><span class="i">ScriptLink</span> <span class="i">runat</span><span class="o">=</span><span class="s">&quot;server&quot;</span> <span class="i">ID</span><span class="o">=</span><span class="s">&quot;NUCZScriptLink6&quot;</span> <span class="i">Language</span><span class="o">=</span><span class="s">&quot;javascript&quot;</span> <span class="i">Name</span><span class="o">=</span><span class="s">&quot;~site/SiteAssets/Scripts/bundle.js&quot;</span><span class="o">/&gt;</span>
+<span class="o">&lt;</span><span class="i">SharePoint</span><span class="o">:</span><span class="i">CssRegistration</span> <span class="i">Name</span><span class="o">=</span><span class="s">&quot;&lt;% $SPUrl:~site/SiteAssets/Scripts/dropzone.css %&gt;&quot;</span> <span class="i">runat</span><span class="o">=</span><span class="s">&quot;server&quot;</span> <span class="o">/&gt;</span>       
+</code></pre></td>
+</tr>
+</table>
+<p>to your MasterPage.</p>
+<p>Function <code>render</code> is called once time after the page is rendered when all the page is loaded onto the browser.
+Function <code>scheduled</code> is scheduled to be called once per a second; can be used to e.g. dynamically change the user interface of the ribbon etc.</p>
+
+<div class="tip" id="fs1">val clientContext : obj<br /><br />Full name: hellofableimportsharepoint.clientContext</div>
+<div class="tip" id="fs2">val web : obj<br /><br />Full name: hellofableimportsharepoint.web</div>
+
+
+   <hr ></hr>
+
+		<div class="align-center">
+    <p class="text-muted">&copy; Copyright 2016 NašeÚkoly.CZ s.r.o. All Rights Reserved. <abbr title="Email">E:</abbr> <a href="mailto:info@naseukoly.cz">info@naseukoly.cz</a>.<br></br>
+
+		We use cookies to ensure that we give you the best experience on our website. If you continue without changing your settings, we'll assume that you are happy to receive all cookies from this website. If you would like to change your preferences you may do so by following the instructions <a href="http://www.aboutcookies.org/Default.aspx?page=1">here</a>
+		</p>
+
+
+		</div>     
+
+</div>
+
+
+	</div>  
+
+	
+    <script src="http://www.naseukoly.cz//javascripts/scale.fix.js"></script>
+  </body>
+</html>
