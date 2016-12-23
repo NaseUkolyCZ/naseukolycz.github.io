@@ -219,7 +219,11 @@ If you implement <code>IApplication</code> interface, you can then add</p>
 </table>
 <p>to your MasterPage.</p>
 <p>Function <code>render</code> is called once time after the page is rendered when all the page is loaded onto the browser.
-Function <code>scheduled</code> is scheduled to be called once per a second; can be used to e.g. dynamically change the user interface of the ribbon etc.</p>
+It can be used to hide or show page UI elements, start workflows etc.</p>
+<p>Function <code>scheduled</code> is scheduled to be called once per a second; can be used to e.g. dynamically change the user interface of the ribbon etc.</p>
+<h2>Final thoughts</h2>
+<p>F# has once again proven to be a great language for custom development in JavaScript. But if you are using F# for Windows development or
+server side development, consider adding <a href="http://fable.io/">Fable</a> to your stack and generate JavaScript from source code in the language you know and love.</p>
 
 <div class="tip" id="fs1">val clientContext : obj<br /><br />Full name: hellofableimportsharepoint.clientContext</div>
 <div class="tip" id="fs2">val web : obj<br /><br />Full name: hellofableimportsharepoint.web</div>
