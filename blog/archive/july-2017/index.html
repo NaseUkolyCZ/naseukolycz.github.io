@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>SharePoint Development with Suave</title>
+    <title>NašeÚkoly.CZ - Blog</title>
     <link rel="stylesheet" href="http://www.naseukoly.cz//stylesheets/styles.css">
     <link rel="stylesheet" href="http://www.naseukoly.cz//stylesheets/pygment_trac.css">
     <link rel="stylesheet" href="http://www.naseukoly.cz//stylesheets/metro.css">
@@ -30,9 +30,7 @@
 					<a href="" class="dropdown-toggle">Blog</a>
 					<ul class="d-menu" data-role="dropdown">
 
-						<li><a href="/blog/2016/08-31-sharepoint-development-with-suave/index.html">SharePoint Development with Suave</a></li>
 						<li><a href="/blog/2017/07-19-sync-today-addin-for-outlook-and-jira/index.html">Sync.Today AddIn for Outlook and JIRA</a></li>
-						<li><a href="/blog/2016/12-20-hello-fable-import-sharepoint/index.html">Hello fable-import-sharepoint</a></li>
 						<li class="divider"></li>
 						<li><a href="/blog/index.html">All posts</a></li>
 					</ul>
@@ -50,27 +48,15 @@
 	</p>
 </div>
 		
-<h1>SharePoint Development with Suave</h1>
 
-<p>This month we finished 3 <a href="https://products.office.com/en-us/sharepoint/sharepoint-online-collaboration-software">SharePoint Online projects</a> done
-with <a href="https://facebook.github.io/react/">React</a>, <a href="https://dotnet.github.io/orleans/">Orleans actor framework</a> and hosted in <a href="https://azure.microsoft.com/cs-cz/services/app-service/web/">Azure Web Apps</a>
-using <a href="https://suave.io/">Suave</a>.</p>
-<p>We were replacing huge homebuilt Excel or Access fileserver-shared files with SharePoint Online from Office 365 as the structured data storage
-and <a href="https://msdn.microsoft.com/en-us/library/office/fp142381.aspx">provider-hosted SharePoint Add-ins</a> for the user interface.
-We did some Proof-Of-Concepts on the top of the SharePoint standard interface, but the users were not very happy and demanded feature-rich experience.</p>
-<p>In these projects we had to overcome a few of obstacles like:</p>
-<ul>
-<li>how to get the OAuth tokens and work with them when the user needs to access the data stored in the SharePoint Online</li>
-<li>how to work with a SharePoint Online list having 10.000+ items</li>
-<li>how to build a small-enough framework (API and API client) to implement calls between React frontend and Orleans backend</li>
-</ul>
-<p>At the end we have a structure allowing us:</p>
-<ul>
-<li>create React frontend in F# using <a href="http://fable.io/">Fable</a></li>
-<li>create functional actor backend in Orleans</li>
-<li>to have continuous integration including the UI tests</li>
-</ul>
-<p>for any server-based web application based on SharePoint Online.</p>
+
+<div style="width: 100%;" class="tile-group no-margin no-padding">
+    <div  class="tile-large ol-transparent" onclick="document.location.href='/blog/2017/07-19-sync-today-addin-for-outlook-and-jira/index.html'">
+        <div class="tile-content">
+            <span><a href="/blog/2017/07-19-sync-today-addin-for-outlook-and-jira/index.html"><h2>Sync.Today AddIn for Outlook and JIRA</h2></a></span>
+        </div>
+    </div>
+</div>
 
 
 
